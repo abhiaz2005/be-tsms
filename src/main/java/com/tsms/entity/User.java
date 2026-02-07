@@ -2,8 +2,12 @@ package com.tsms.entity;
 
 import java.util.Date;
 
+import com.tsms.enums.Role;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,11 +26,15 @@ public class User {
 	@Column(name = "name")
 	private String name ;
 	
+	@Column(name = "email")
+	private String email ;
+	
 	@Column(name = "password")
 	private String password ;
 	
-	@Column(name = "age")
-	private Integer age ;
+	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
+	private Role role ;
 	
 	@Column(name = "dob")
 	private Date dob ;
@@ -38,6 +46,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "permanent_address_id")
     private Address permanentAddress;
+    
+    @Column(name = "is_active")
+    private Boolean isActive ;
 
 	public Long getId() {
 		return id;
@@ -63,13 +74,6 @@ public class User {
 		this.password = password;
 	}
 
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
 
 	public Date getDob() {
 		return dob;
@@ -94,24 +98,54 @@ public class User {
 	public void setPermanentAddress(Address permanentAddress) {
 		this.permanentAddress = permanentAddress;
 	}
+	
+	
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
+	}
+	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(Long id, String name, String password, Integer age, Date dob, Address presentAddress,
-			Address permanentAddress) {
+	public User(Long id, String name, String email, String password, Role role, Date dob, Address presentAddress,
+			Address permanentAddress, Boolean isActive) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.email = email;
 		this.password = password;
-		this.age = age;
+		this.role = role;
 		this.dob = dob;
 		this.presentAddress = presentAddress;
 		this.permanentAddress = permanentAddress;
+		this.isActive = isActive;
 	}
-    
+
+	
+	 
 	
     
 }
