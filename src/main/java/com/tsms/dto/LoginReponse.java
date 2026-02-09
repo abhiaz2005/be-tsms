@@ -4,6 +4,8 @@ import com.tsms.enums.Role;
 
 public class LoginReponse {
 
+	private Long id ;
+	
     private String token ;
     
     private String userName ;
@@ -47,6 +49,16 @@ public class LoginReponse {
 	public LoginReponse() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LoginReponse(String token, String userName, String email, Role role) {

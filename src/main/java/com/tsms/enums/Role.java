@@ -1,5 +1,5 @@
 package com.tsms.enums;
 
 public enum Role {
-	ADMIN,USER,STAFF
+	ADMIN,USER,STAFF,STUDENT
 }

@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
 
 						String token = jwtService.generateToken(loginRequest.getEmail());
 						LoginReponse response = new LoginReponse() ;
+						response.setId(user.getId());
 						response.setToken(token);
 						response.setUserName(user.getName());
 						response.setEmail(user.getEmail());

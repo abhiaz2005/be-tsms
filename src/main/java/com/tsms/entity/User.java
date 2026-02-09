@@ -39,6 +39,18 @@ public class User {
 	@Column(name = "dob")
 	private Date dob ;
 	
+	@Column(name = "father_name")
+	private String fatherName ;
+	
+	@Column(name = "mother_name")
+	private String motherName ;
+	
+	@Column(name = "section")
+	private String section ;
+	
+	@Column(name = "studied_from")
+	private Date studiedFrom ;
+	
 	@ManyToOne
     @JoinColumn(name = "present_address_id")
     private Address presentAddress;
