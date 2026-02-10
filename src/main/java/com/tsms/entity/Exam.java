@@ -22,7 +22,7 @@ public class Exam {
 	private String studentClass; 
 
 	@Column(name = "full_mark")
-	private Integer fullMark;
+	private Double fullMark;
 
 	public Long getId() {
 		return id;
@@ -48,11 +48,11 @@ public class Exam {
 		this.studentClass = studentClass;
 	}
 
-	public Integer getFullMark() {
+	public Double getFullMark() {
 		return fullMark;
 	}
 
-	public void setFullMark(Integer fullMark) {
+	public void setFullMark(Double fullMark) {
 		this.fullMark = fullMark;
 	}
 
@@ -61,7 +61,7 @@ public class Exam {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Exam(Long id, String examName, String studentClass, Integer fullMark) {
+	public Exam(Long id, String examName, String studentClass, Double fullMark) {
 		super();
 		this.id = id;
 		this.examName = examName;

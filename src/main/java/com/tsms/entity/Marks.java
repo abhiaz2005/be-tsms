@@ -28,7 +28,7 @@ public class Marks {
 	private Exam exam;
 
 	@Column(name = "secured_mark")
-	private Integer securedMark;
+	private Double securedMark;
 
 	public Long getId() {
 		return id;
@@ -54,11 +54,12 @@ public class Marks {
 		this.exam = exam;
 	}
 
-	public Integer getSecuredMark() {
+	
+	public Double getSecuredMark() {
 		return securedMark;
 	}
 
-	public void setSecuredMark(Integer securedMark) {
+	public void setSecuredMark(Double securedMark) {
 		this.securedMark = securedMark;
 	}
 
@@ -67,7 +68,7 @@ public class Marks {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Marks(Long id, User student, Exam exam, Integer securedMark) {
+	public Marks(Long id, User student, Exam exam, Double securedMark) {
 		super();
 		this.id = id;
 		this.student = student;
