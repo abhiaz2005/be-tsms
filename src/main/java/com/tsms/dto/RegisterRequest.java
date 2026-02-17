@@ -11,22 +11,37 @@ import jakarta.validation.constraints.Size;
 public class RegisterRequest {
 
 	@NotBlank(message = "Name is required")
-    private String name;
+	private String name;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Invalid email format")
-    private String email;
+	@NotBlank(message = "Email is required")
+	@Email(message = "Invalid email format")
+	private String email;
 
-    @NotBlank(message = "Password is required")
-    @Size(min = 6, message = "Password must be at least 6 characters")
-    private String password;
+	private String password;
 
-    @NotNull(message = "Date of birth is required")
-    @Past(message = "DOB must be in past")
-    private Date dob;
+	@NotNull(message = "Date of birth is required")
+	@Past(message = "DOB must be in past")
+	private Date dob;
 
-    private Integer age;
+	private Integer age;
 
+	@NotBlank(message = "Father Name is required")
+	private String fatherName;
+
+	@NotBlank(message = "Mother Name is required")
+	private String motherName;
+
+	@NotNull(message = "Studied From is required")
+	@Past(message = "Studied from must be in past")
+	private Date studiedFrom;
+
+	private AddressDto presentAddress;
+
+	private AddressDto permanentAddress;
+
+	
+
+	
 	public String getName() {
 		return name;
 	}
@@ -67,6 +82,46 @@ public class RegisterRequest {
 		this.age = age;
 	}
 
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	public String getMotherName() {
+		return motherName;
+	}
+
+	public void setMotherName(String motherName) {
+		this.motherName = motherName;
+	}
+
+	public Date getStudiedFrom() {
+		return studiedFrom;
+	}
+
+	public void setStudiedFrom(Date studiedFrom) {
+		this.studiedFrom = studiedFrom;
+	}
+
+	public AddressDto getPresentAddress() {
+		return presentAddress;
+	}
+
+	public void setPresentAddress(AddressDto presentAddress) {
+		this.presentAddress = presentAddress;
+	}
+
+	public AddressDto getPermanentAddress() {
+		return permanentAddress;
+	}
+
+	public void setPermanentAddress(AddressDto permanentAddress) {
+		this.permanentAddress = permanentAddress;
+	}
+
 	public RegisterRequest() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -79,6 +134,22 @@ public class RegisterRequest {
 		this.password = password;
 		this.dob = dob;
 		this.age = age;
+	}
+
+	public RegisterRequest( String name, String email, String password, Date dob,
+			Integer age, String fatherName, String motherName, Date studiedFrom, AddressDto presentAddress,
+			AddressDto permanentAddress) {
+		super();
+		this.name = name;
+		this.email = email;
+		this.password = password;
+		this.dob = dob;
+		this.age = age;
+		this.fatherName = fatherName;
+		this.motherName = motherName;
+		this.studiedFrom = studiedFrom;
+		this.presentAddress = presentAddress;
+		this.permanentAddress = permanentAddress;
 	}
 
 }

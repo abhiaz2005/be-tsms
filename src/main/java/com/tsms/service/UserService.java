@@ -12,4 +12,6 @@ public interface UserService {
 
 	Response<?> login(@Valid LoginRequest request);
 
+	Response<?> getAllStudent();
+
 }

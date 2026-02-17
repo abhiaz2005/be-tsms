@@ -1,19 +1,9 @@
-package com.tsms.entity;
+package com.tsms.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.tsms.entity.Address;
 
-@Entity
-@Table(name = "address")
-public class Address {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class AddressDto {
+	private Long id;
 
     private String street;
 
@@ -63,12 +53,12 @@ public class Address {
 		this.pincode = pincode;
 	}
 
-	public Address() {
+	public AddressDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Address(Long id, String street, String city, String state, String pincode) {
+	public AddressDto(Long id, String street, String city, String state, String pincode) {
 		super();
 		this.id = id;
 		this.street = street;
@@ -77,16 +67,13 @@ public class Address {
 		this.pincode = pincode;
 	}
 
-	public Address(String street, String city, String state, String pincode) {
-		super();
-		this.street = street;
-		this.city = city;
-		this.state = state;
-		this.pincode = pincode;
+	public Address convertToEntity() {
+		return new Address(
+				this.street!=null?this.street:null,
+				this.city!=null?this.city:null,
+				this.state!=null?this.state:null,
+				this.pincode!=null?this.pincode:null);
 	}
-	
-	
-	
-	
-
+    
+    
 }

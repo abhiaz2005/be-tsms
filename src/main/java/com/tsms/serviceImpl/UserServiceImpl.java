@@ -1,7 +1,9 @@
 package com.tsms.serviceImpl;
 
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,16 @@ import com.tsms.dto.LoginReponse;
 import com.tsms.dto.LoginRequest;
 import com.tsms.dto.RegisterRequest;
 import com.tsms.dto.Response;
+import com.tsms.dto.UserDto;
+import com.tsms.entity.Address;
 import com.tsms.entity.User;
 import com.tsms.enums.Role;
+import com.tsms.repository.AddressRepository;
 import com.tsms.repository.UserRepository;
+import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.security.JwtService;
 import com.tsms.service.UserService;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,10 +36,16 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	@Autowired
+	private AddressRepository addressRepository ;
+	
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	@Autowired
 	private JwtService jwtService ;
+	
+	@Autowired
+	private CustomizedUserDetailsService customizedUserDetailsService ;
 
 	@Override
 	public Response<?> register(RegisterRequest request) {
@@ -53,8 +66,21 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(passwordEncoder.encode(pass));
 			user.setRole(Role.USER);
 			user.setIsActive(true);
+			user.setFatherName(request.getFatherName());
+			user.setMotherName(request.getMotherName());
+			user.setStudiedFrom(request.getStudiedFrom());
+			
+			//Address
+			Address presentAddress = request.getPresentAddress().convertToEntity();
+			Address permanentAddress = request.getPermanentAddress().convertToEntity() ;
+			presentAddress = addressRepository.save(presentAddress);
+			permanentAddress = addressRepository.save(permanentAddress);
+			logger.info("address saved ");
+			user.setPermanentAddress(permanentAddress);
+			user.setPresentAddress(presentAddress);
 			User savedUser = userRepository.save(user);
 			logger.info("User saved");
+			
 			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
 
 		} catch (Exception e) {
@@ -91,7 +117,27 @@ public class UserServiceImpl implements UserService {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			return new Response<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "something went wrong", null);
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+
+
+	@Override
+	public Response<?> getAllStudent() {
+		try {
+			Optional<User> userDetailsOptional = customizedUserDetailsService.getUserDetails();
+			if(userDetailsOptional.isPresent() && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
+				
+				List<User> users = userRepository.findAll();
+				List<UserDto> userList = users.stream().filter(e->e!=null).map(User::convertToDto).collect(Collectors.toList());
+				return new Response<>(HttpStatus.OK.value(), "success.", userList);
+			}
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "You have no permission for the API", null);			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
 		}
 	}
 

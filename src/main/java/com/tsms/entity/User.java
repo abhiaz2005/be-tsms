@@ -2,6 +2,7 @@ package com.tsms.entity;
 
 import java.util.Date;
 
+import com.tsms.dto.UserDto;
 import com.tsms.enums.Role;
 
 import jakarta.persistence.Column;
@@ -25,6 +26,9 @@ public class User {
 	
 	@Column(name = "name")
 	private String name ;
+	
+	@Column(name = "image_url")
+	private String image ;
 	
 	@Column(name = "email")
 	private String email ;
@@ -137,24 +141,93 @@ public class User {
 		this.role = role;
 	}
 
+	
+	
+	public String getFatherName() {
+		return fatherName;
+	}
+
+	public void setFatherName(String fatherName) {
+		this.fatherName = fatherName;
+	}
+
+	public String getMotherName() {
+		return motherName;
+	}
+
+	public void setMotherName(String motherName) {
+		this.motherName = motherName;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
+	}
+
+	public Date getStudiedFrom() {
+		return studiedFrom;
+	}
+
+	public void setStudiedFrom(Date studiedFrom) {
+		this.studiedFrom = studiedFrom;
+	}
+	
+	
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(Long id, String name, String email, String password, Role role, Date dob, Address presentAddress,
+
+	public User(Long id, String name, String image, String email, String password, Role role, Date dob,
+			String fatherName, String motherName, String section, Date studiedFrom, Address presentAddress,
 			Address permanentAddress, Boolean isActive) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.image = image;
 		this.email = email;
 		this.password = password;
 		this.role = role;
 		this.dob = dob;
+		this.fatherName = fatherName;
+		this.motherName = motherName;
+		this.section = section;
+		this.studiedFrom = studiedFrom;
 		this.presentAddress = presentAddress;
 		this.permanentAddress = permanentAddress;
 		this.isActive = isActive;
 	}
+
+	public UserDto convertToDto() {
+	    return new UserDto(
+	        this.id ,
+	        this.image != null ? this.image : null,
+	        this.name != null ? this.name : null,
+	        this.email != null ? this.email : null,
+	        this.role != null ? this.role : null,
+	        this.dob != null ? this.dob : null,
+	        this.fatherName != null ? this.fatherName : null,
+	        this.motherName != null ? this.motherName : null,
+	        this.section != null ? this.section : null,
+	        this.studiedFrom != null ? this.studiedFrom : null,
+	        this.presentAddress != null ? this.presentAddress : null,
+	        this.permanentAddress != null ? this.permanentAddress : null
+	    );
+	}
+
 
 	
 	 
