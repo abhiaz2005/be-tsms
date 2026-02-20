@@ -1,6 +1,10 @@
 package com.tsms.serviceImpl;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.ZoneId;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,7 +30,6 @@ import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.security.JwtService;
 import com.tsms.service.UserService;
 
-
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -35,44 +38,50 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
-	private AddressRepository addressRepository ;
-	
+	private AddressRepository addressRepository;
+
 	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
-	
+
 	@Autowired
-	private JwtService jwtService ;
-	
+	private JwtService jwtService;
+
 	@Autowired
-	private CustomizedUserDetailsService customizedUserDetailsService ;
+	private CustomizedUserDetailsService customizedUserDetailsService;
 
 	@Override
 	public Response<?> register(RegisterRequest request) {
 		try {
 			Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 			if (userOptional.isPresent()) {
-				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User already exists", null);
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this email already exists", null);
 			}
+			Optional<User> userPhoneOptional = userRepository.findByPhoneNo(request.getPhoneNo());
+			if (userPhoneOptional.isPresent()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists", null);
+			}
+			
 			User user = new User();
 			user.setEmail(request.getEmail());
 			user.setDob(request.getDob());
 			user.setName(request.getName());
 			String firstName = request.getName().trim().split("\\s+")[0];
-			int year = request.getDob().toInstant()
-					.atZone(ZoneId.systemDefault())
-					.toLocalDate().getYear();
-			String pass =firstName+"@"+year;
+			int year = request.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+			String pass = firstName + "@" + year;
 			user.setPassword(passwordEncoder.encode(pass));
 			user.setRole(Role.USER);
 			user.setIsActive(true);
+			user.setSection(request.getSection());
+			user.setGender(request.getGender());
+			user.setPhoneNo(request.getPhoneNo());
 			user.setFatherName(request.getFatherName());
 			user.setMotherName(request.getMotherName());
 			user.setStudiedFrom(request.getStudiedFrom());
-			
-			//Address
+
+			// Address
 			Address presentAddress = request.getPresentAddress().convertToEntity();
-			Address permanentAddress = request.getPermanentAddress().convertToEntity() ;
+			Address permanentAddress = request.getPermanentAddress().convertToEntity();
 			presentAddress = addressRepository.save(presentAddress);
 			permanentAddress = addressRepository.save(permanentAddress);
 			logger.info("address saved ");
@@ -80,7 +89,7 @@ public class UserServiceImpl implements UserService {
 			user.setPresentAddress(presentAddress);
 			User savedUser = userRepository.save(user);
 			logger.info("User saved");
-			
+
 			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
 
 		} catch (Exception e) {
@@ -89,8 +98,6 @@ public class UserServiceImpl implements UserService {
 		}
 	}
 
-
-	
 	@Override
 	public Response<Object> login(LoginRequest loginRequest) {
 		Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
@@ -98,43 +105,78 @@ public class UserServiceImpl implements UserService {
 			if (userOptional.isPresent() && userOptional.get().getIsActive()) {
 				User user = userOptional.get();
 
-				
-					if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+				if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
 
-						String token = jwtService.generateToken(loginRequest.getEmail());
-						LoginReponse response = new LoginReponse() ;
-						response.setId(user.getId());
-						response.setToken(token);
-						response.setUserName(user.getName());
-						response.setEmail(user.getEmail());
-						response.setRole(user.getRole());
+					String token = jwtService.generateToken(loginRequest.getEmail());
+					LoginReponse response = new LoginReponse();
+					response.setId(user.getId());
+					response.setToken(token);
+					response.setUserName(user.getName());
+					response.setEmail(user.getEmail());
+					response.setRole(user.getRole());
 
-						return new Response<>(HttpStatus.OK.value(), "Login Success.", response);
-					}
-					return new Response<>(HttpStatus.BAD_REQUEST.value(), "Invalid credentials.", null);
+					return new Response<>(HttpStatus.OK.value(), "Login Success.", response);
 				}
-				return new Response<>(HttpStatus.BAD_REQUEST.value(), "invalid credential", null);
-			
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Invalid credentials.", null);
+			}
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "invalid credential", null);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
 		}
 	}
 
-
-
 	@Override
 	public Response<?> getAllStudent() {
 		try {
 			Optional<User> userDetailsOptional = customizedUserDetailsService.getUserDetails();
-			if(userDetailsOptional.isPresent() && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
-				
+			if (userDetailsOptional.isPresent() && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
+
 				List<User> users = userRepository.findAll();
-				List<UserDto> userList = users.stream().filter(e->e!=null).map(User::convertToDto).collect(Collectors.toList());
-				return new Response<>(HttpStatus.OK.value(), "success.", userList);
+				List<UserDto> userList = users.stream().filter(e -> e != null).map(e -> {
+					UserDto userDto = e.convertToDto();
+					Date dob = e.getDob();
+					if (dob != null) {
+						LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						LocalDate now = LocalDate.now();
+						userDto.setAge(Period.between(birthDate, now).getYears());
+					}else {
+						userDto.setAge(null);	
+					}
+					return userDto;
+				}).collect(Collectors.toList());
+				return new Response<>(HttpStatus.OK.value(), "success.",
+						userList.isEmpty() ? Collections.emptyList() : userList);
 			}
-			return new Response<>(HttpStatus.BAD_REQUEST.value(), "You have no permission for the API", null);			
-			
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "You have no permission for the API", null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+	@Override
+	public Response<?> getStudentById(Long id) {
+		try {
+			Optional<User> userOptional = userRepository.findById(id);
+			if (userOptional.isPresent()) {
+				User user = userOptional.get();
+
+				UserDto userDto = user.convertToDto();
+				Date dob = user.getDob();
+				if (dob != null) {
+					LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+					LocalDate now = LocalDate.now();
+					userDto.setAge(Period.between(birthDate, now).getYears());
+				}else {
+					userDto.setAge(null);	
+				}
+				return new Response<>(HttpStatus.OK.value(), "success.", userDto);
+			}
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "No user present", null);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);

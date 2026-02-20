@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Pattern;
 
 public class RegisterRequest {
 
@@ -22,6 +22,19 @@ public class RegisterRequest {
 	@NotNull(message = "Date of birth is required")
 	@Past(message = "DOB must be in past")
 	private Date dob;
+	
+	@NotBlank(message = "Section is required")
+	private String section ;
+	
+	@NotBlank(message = "Gender is required")
+	private String gender ;
+	
+	@NotBlank(message = "Phone number is required")
+	@Pattern(
+	    regexp = "^[6-9][0-9]{9}$",
+	    message = "Phone number must be a valid 10-digit Indian mobile number"
+	)
+	private String phoneNo;
 
 	private Integer age;
 
@@ -38,8 +51,6 @@ public class RegisterRequest {
 	private AddressDto presentAddress;
 
 	private AddressDto permanentAddress;
-
-	
 
 	
 	public String getName() {
@@ -120,6 +131,30 @@ public class RegisterRequest {
 
 	public void setPermanentAddress(AddressDto permanentAddress) {
 		this.permanentAddress = permanentAddress;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
+
+	public String getSection() {
+		return section;
+	}
+
+	public void setSection(String section) {
+		this.section = section;
 	}
 
 	public RegisterRequest() {

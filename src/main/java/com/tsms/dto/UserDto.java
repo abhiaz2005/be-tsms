@@ -16,6 +16,10 @@ private String image ;
 	
 	private Role role ;
 	
+	private Integer age ;
+	
+	private String gender ;
+	
 	private Date dob ;
 	
 	private String fatherName ;
@@ -29,6 +33,7 @@ private String image ;
 	private Address presentAddress;
 
     private Address permanentAddress;
+    
 
 	public Long getId() {
 		return id;
@@ -126,12 +131,30 @@ private String image ;
 		this.permanentAddress = permanentAddress;
 	}
 
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
+	}
+	
+	
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
 	public UserDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDto(Long id, String image, String name, String email, Role role, Date dob, String fatherName,
+	public UserDto(Long id, String image, String name, String email, Role role,String gender , Date dob, String fatherName,
 			String motherName, String section, Date studiedFrom, Address presentAddress, Address permanentAddress) {
 		super();
 		this.id = id;
@@ -139,6 +162,7 @@ private String image ;
 		this.name = name;
 		this.email = email;
 		this.role = role;
+		this.gender = gender ;
 		this.dob = dob;
 		this.fatherName = fatherName;
 		this.motherName = motherName;

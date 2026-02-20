@@ -33,6 +33,9 @@ public class User {
 	@Column(name = "email")
 	private String email ;
 	
+	@Column(name = "gender")
+	private String gender ;
+	
 	@Column(name = "password")
 	private String password ;
 	
@@ -51,6 +54,9 @@ public class User {
 	
 	@Column(name = "section")
 	private String section ;
+	
+	@Column(name = "phone_number")
+	private String phoneNo ;
 	
 	@Column(name = "studied_from")
 	private Date studiedFrom ;
@@ -184,6 +190,24 @@ public class User {
 	public void setImage(String image) {
 		this.image = image;
 	}
+	
+	
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
 
 	public User() {
 		super();
@@ -191,20 +215,26 @@ public class User {
 	}
 
 
-	public User(Long id, String name, String image, String email, String password, Role role, Date dob,
-			String fatherName, String motherName, String section, Date studiedFrom, Address presentAddress,
-			Address permanentAddress, Boolean isActive) {
+	
+
+
+
+	public User(Long id, String name, String image, String email, String gender, String password, Role role, Date dob,
+			String fatherName, String motherName, String section, String phoneNo, Date studiedFrom,
+			Address presentAddress, Address permanentAddress, Boolean isActive) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.image = image;
 		this.email = email;
+		this.gender = gender;
 		this.password = password;
 		this.role = role;
 		this.dob = dob;
 		this.fatherName = fatherName;
 		this.motherName = motherName;
 		this.section = section;
+		this.phoneNo = phoneNo;
 		this.studiedFrom = studiedFrom;
 		this.presentAddress = presentAddress;
 		this.permanentAddress = permanentAddress;
@@ -218,6 +248,7 @@ public class User {
 	        this.name != null ? this.name : null,
 	        this.email != null ? this.email : null,
 	        this.role != null ? this.role : null,
+	        this.gender!=null ? this.gender :null ,
 	        this.dob != null ? this.dob : null,
 	        this.fatherName != null ? this.fatherName : null,
 	        this.motherName != null ? this.motherName : null,

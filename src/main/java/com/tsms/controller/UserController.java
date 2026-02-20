@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsms.dto.LoginRequest;
@@ -37,6 +38,12 @@ public class UserController {
 	@GetMapping("api/get/all/student")
 	public ResponseEntity<?> getAllStudent() {
 		Response<?> response  = userService.getAllStudent();
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
+	@GetMapping("api/get/student")
+	public ResponseEntity<?> getStudentById(@RequestParam(required = false)Long id) {
+		Response<?> response  = userService.getStudentById(id);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 

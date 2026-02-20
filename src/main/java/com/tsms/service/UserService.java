@@ -14,4 +14,6 @@ public interface UserService {
 
 	Response<?> getAllStudent();
 
+	Response<?> getStudentById(Long id);
+
 }
