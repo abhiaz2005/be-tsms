@@ -16,8 +16,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.tsms.cache.InMemCache;
 import com.tsms.dto.LoginReponse;
 import com.tsms.dto.LoginRequest;
+import com.tsms.dto.OtpRequest;
 import com.tsms.dto.RegisterRequest;
 import com.tsms.dto.Response;
 import com.tsms.dto.UserDto;
@@ -29,6 +31,8 @@ import com.tsms.repository.UserRepository;
 import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.security.JwtService;
 import com.tsms.service.UserService;
+
+import jakarta.validation.Valid;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,6 +53,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private CustomizedUserDetailsService customizedUserDetailsService;
+	
+	@Autowired
+	private InMemCache inMemCache ;
+	
+	@Autowired
+	private EmailService emailService ;
 
 	@Override
 	public Response<?> register(RegisterRequest request) {
@@ -180,6 +190,33 @@ public class UserServiceImpl implements UserService {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+	@Override
+	public Response<?> verifyOtp(OtpRequest request) {
+		try {
+			boolean isVerified = inMemCache.verifyOtp(request.getEmail(), request.getOtp());
+			if(isVerified) {
+				return new Response<>(HttpStatus.OK.value(), "Email verified", null);
+			}
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Invalid OTP", null);
+
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+	@Override
+	public Response<?> sendOtp(OtpRequest request) {
+		try {
+			emailService.sendPasswordResetEmail(request);
+			inMemCache.storeOtp(request.getEmail());
+			return new Response<>(HttpStatus.OK.value(), "email sent", null);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something error in sending otp", null);
 		}
 	}
 

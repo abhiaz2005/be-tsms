@@ -1,41 +1,23 @@
-package com.tsms.entity;
+package com.tsms.dto;
 
-import jakarta.persistence.*;
-import java.time.LocalDate;
 import java.util.Date;
 
-import com.tsms.dto.FeesDto;
 import com.tsms.enums.PaymentMode;
 
-@Entity
-@Table(name = "fees")
-public class Fees {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class FeesDto {
 	private Long id;
 
-	
-	@ManyToOne
-	@JoinColumn(name = "student_id")
-	private User student;
+	private UserDto student;
 
-	
-	private Integer month; 
+	private Integer month;
 
-	
 	private Integer year;
 
-	
 	private Double amount;
 
-	@Column(name = "payment_date")
 	private Date paymentDate;
 
-	@Enumerated(EnumType.STRING)
 	private PaymentMode mode;
-	
-	
 
 	public Long getId() {
 		return id;
@@ -45,15 +27,13 @@ public class Fees {
 		this.id = id;
 	}
 
-	public User getStudent() {
+	public UserDto getStudent() {
 		return student;
 	}
 
-	public void setStudent(User student) {
+	public void setStudent(UserDto student) {
 		this.student = student;
 	}
-
-	
 
 	public Integer getMonth() {
 		return month;
@@ -95,12 +75,13 @@ public class Fees {
 		this.mode = mode;
 	}
 
-	public Fees() {
+	public FeesDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Fees(Long id, User student, Integer month, Integer year, Double amount, Date paymentDate, PaymentMode mode) {
+	public FeesDto(Long id, UserDto student, Integer month, Integer year, Double amount, Date paymentDate,
+			PaymentMode mode) {
 		super();
 		this.id = id;
 		this.student = student;
@@ -110,25 +91,8 @@ public class Fees {
 		this.paymentDate = paymentDate;
 		this.mode = mode;
 	}
-
-	public FeesDto convertToDto() {
-		return new FeesDto(id,
-				student!=null?student.convertToDto():null,
-				month!=null?month:null,
-				year!=null?year:null,
-				amount!=null?amount:null,
-				paymentDate!=null?paymentDate:null,
-				mode!=null?mode:null);
-	}
-
-//	this.id = id;
-//	this.student = student;
-//	this.month = month;
-//	this.year = year;
-//	this.amount = amount;
-//	this.paymentDate = paymentDate;
-//	this.mode = mode;
 	
-
 	
 }
+
+

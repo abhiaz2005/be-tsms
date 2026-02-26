@@ -241,6 +241,10 @@ public class User {
 		this.isActive = isActive;
 	}
 
+	public User(Long id) {
+		this.id = id;
+	}
+
 	public UserDto convertToDto() {
 	    return new UserDto(
 	        this.id ,
