@@ -216,7 +216,7 @@ public class UserServiceImpl implements UserService {
 			return new Response<>(HttpStatus.OK.value(), "email sent", null);
 		}catch(Exception e) {
 			e.printStackTrace();
-			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something error in sending otp", null);
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something error in sending otp	", null);
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tsms.dto.LoginRequest;
+import com.tsms.dto.OtpRequest;
 import com.tsms.dto.RegisterRequest;
 import com.tsms.dto.Response;
 import com.tsms.service.UserService;
@@ -35,6 +36,18 @@ public class UserController {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
+	@PostMapping("verify/otp")
+	public ResponseEntity<?> verifyOtp(@Valid @RequestBody OtpRequest request) {
+		Response<?> response  = userService.verifyOtp(request);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
+	@PostMapping("send/otp")
+	public ResponseEntity<?> sendOtp(@RequestBody OtpRequest request) {
+		Response<?> response  = userService.sendOtp(request);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
 	@GetMapping("api/get/all/student")
 	public ResponseEntity<?> getAllStudent() {
 		Response<?> response  = userService.getAllStudent();
@@ -47,4 +60,5 @@ public class UserController {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
+	
 }
