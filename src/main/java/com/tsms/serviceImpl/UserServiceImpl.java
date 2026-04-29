@@ -107,6 +107,46 @@ public class UserServiceImpl implements UserService {
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
 		}
 	}
+	
+	public Response<?> registerAdmin(RegisterRequest request) {
+		try {
+			Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+			if (userOptional.isPresent()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this email already exists", null);
+			}
+			Optional<User> userPhoneOptional = userRepository.findByPhoneNo(request.getPhoneNo());
+			if (userPhoneOptional.isPresent()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists", null);
+			}
+			
+			User user = new User();
+			user.setEmail(request.getEmail());
+			user.setDob(request.getDob());
+			user.setName(request.getName());
+			if(request.getName()==null || request.getName().isEmpty()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "admin-please provide name", null);
+			}
+			String firstName = request.getName().trim().split("\\s+")[0];
+			int year = request.getDob().toInstant().atZone(ZoneId.systemDefault()).toLocalDate().getYear();
+			String pass = firstName + "@" + year;
+			user.setPassword(passwordEncoder.encode(pass));
+			user.setRole(Role.ADMIN);
+			user.setIsActive(true);
+			user.setPhoneNo(request.getPhoneNo());
+			User savedUser = userRepository.save(user);
+			savedUser.setPassword(pass);
+			logger.info("User saved");
+			//thread used for speed application
+			new Thread(()->{
+				emailService.sendAccountConfirmationMail(savedUser);
+			}).start();
+			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
+		}
+	}
 
 	@Override
 	public Response<Object> login(LoginRequest loginRequest) {
@@ -144,18 +184,21 @@ public class UserServiceImpl implements UserService {
 			if (userDetailsOptional.isPresent() && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
 
 				List<User> users = userRepository.findAll();
-				List<UserDto> userList = users.stream().filter(e -> e != null).map(e -> {
-					UserDto userDto = e.convertToDto();
-					Date dob = e.getDob();
-					if (dob != null) {
-						LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						LocalDate now = LocalDate.now();
-						userDto.setAge(Period.between(birthDate, now).getYears());
-					}else {
-						userDto.setAge(null);	
-					}
-					return userDto;
-				}).collect(Collectors.toList());
+				List<UserDto> userList = users.stream()
+					.filter(e -> e != null)
+					.filter(e -> !e.getRole().equals(Role.ADMIN))
+					.map(e -> {
+						UserDto userDto = e.convertToDto();
+						Date dob = e.getDob();
+						if (dob != null) {
+							LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+							LocalDate now = LocalDate.now();
+							userDto.setAge(Period.between(birthDate, now).getYears());
+						}else {
+							userDto.setAge(null);	
+						}
+						return userDto;
+					}).collect(Collectors.toList());
 				return new Response<>(HttpStatus.OK.value(), "success.",
 						userList.isEmpty() ? Collections.emptyList() : userList);
 			}

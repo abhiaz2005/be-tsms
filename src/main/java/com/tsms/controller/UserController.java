@@ -30,6 +30,12 @@ public class UserController {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
+	@PostMapping("auth/register-s-admin")
+	public ResponseEntity<?> registerAdmin( @RequestBody RegisterRequest request) {
+		Response<?> response  = userService.registerAdmin(request);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
 	@PostMapping("auth/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
 		Response<?> response  = userService.login(request);

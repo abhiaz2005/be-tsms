@@ -21,4 +21,6 @@ public interface UserService {
 
 	Response<?> sendOtp(OtpRequest request);
 
+	Response<?> registerAdmin( RegisterRequest request);
+
 }

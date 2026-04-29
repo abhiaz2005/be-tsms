@@ -1,5 +1,7 @@
 package com.tsms.entity;
 
+import java.util.Date;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +25,9 @@ public class Exam {
 
 	@Column(name = "full_mark")
 	private Double fullMark;
+	
+	@Column(name = "created_at")
+	private Date createdAt ;
 
 	public Long getId() {
 		return id;
@@ -55,19 +60,30 @@ public class Exam {
 	public void setFullMark(Double fullMark) {
 		this.fullMark = fullMark;
 	}
+	
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 
 	public Exam() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Exam(Long id, String examName, String studentClass, Double fullMark) {
+	public Exam(Long id, String examName, String studentClass, Double fullMark, Date createdAt) {
 		super();
 		this.id = id;
 		this.examName = examName;
 		this.studentClass = studentClass;
 		this.fullMark = fullMark;
+		this.createdAt = createdAt;
 	}
+
+	
 
 	
 }
