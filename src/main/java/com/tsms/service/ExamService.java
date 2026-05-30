@@ -7,4 +7,6 @@ public interface ExamService {
 
 	Response<?> createExam(ExamDto exam);
 
+	Response<?> getAllExam();
+
 }

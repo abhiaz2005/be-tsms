@@ -1,6 +1,7 @@
 package com.tsms.serviceImpl;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -57,6 +58,27 @@ public class ExamServiceImpl implements ExamService {
 				emailService.sendExamCreatedMail(exam);
 			}).start();
 			return new Response<>(HttpStatus.OK.value(), "Exam saved successfully", null);
+		}catch(Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+
+	@Override
+	public Response<?> getAllExam() {
+		try {
+			Optional<User> userDetails = customizedUserDetailsService.getUserDetails();
+			if(userDetails.isEmpty()) {
+				logger.info("Autorization err");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Please login again", null);
+			}
+			if(!userDetails.get().getRole().equals(Role.ADMIN)) {
+				logger.info("Another user another than admin trying to create exam.");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
+			}
+			List<Exam> exams = examRepository.findAll();
+			return new Response<>(HttpStatus.OK.value(), "Success", exams);
 		}catch(Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
