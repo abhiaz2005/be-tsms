@@ -83,6 +83,13 @@ public class Exam {
 		this.createdAt = createdAt;
 	}
 
+	public Exam(Long id) {
+		super();
+		this.id = id;
+	}
+	
+	
+
 	
 
 	

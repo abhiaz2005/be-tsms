@@ -23,7 +23,7 @@ public class RegisterRequest {
 	@Past(message = "DOB must be in past")
 	private Date dob;
 	
-	@NotBlank(message = "Section is required")
+//	@NotBlank(message = "Section is required")
 	private String section ;
 	
 	@NotBlank(message = "Gender is required")

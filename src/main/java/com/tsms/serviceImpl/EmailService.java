@@ -23,9 +23,9 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender javaMailService;
-	
+
 	@Autowired
-	private UserRepository userRepository ;
+	private UserRepository userRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(EmailService.class);
 
@@ -133,23 +133,23 @@ public class EmailService {
 								                                </tr>
 
 								                            </table>
-								                            
+
 								                            <!-- Username & password-->
 															<table width="100%%" cellpadding="0" cellspacing="0"
 															    style="margin-top:20px; background:#f9fafb; border-radius:8px; padding:15px;">
-															
+
 															    <tr>
 															        <td style="padding:8px 0; font-size:14px;">
 															            <strong>Username:</strong> %s
 															        </td>
 															    </tr>
-															
+
 															    <tr>
 															        <td style="padding:8px 0; font-size:14px;">
 															            <strong>Password:</strong> %s
 															        </td>
 															    </tr>
-															
+
 															</table>
 
 								                            <p style="margin-top:25px; font-size:14px; color:#666;">
@@ -179,7 +179,8 @@ public class EmailService {
 								</body>
 								</html>
 								""",
-						user.getName(), user.getName(), user.getEmail(), user.getPhoneNo(),user.getEmail(),user.getPassword());
+						user.getName(), user.getName(), user.getEmail(), user.getPhoneNo(), user.getEmail(),
+						user.getPassword());
 
 				helper.setTo(user.getEmail());
 				helper.setSubject(subject);
@@ -199,110 +200,228 @@ public class EmailService {
 
 	public void sendExamCreatedMail(Exam exam) {
 
-	    List<User> admins = userRepository.findByRole(Role.ADMIN);
+		List<User> admins = userRepository.findByRole(Role.ADMIN);
 
-	    if (admins == null || admins.isEmpty()) {
-	        log.warn("No admin users found to send exam mail");
-	        return;
-	    }
+		if (admins == null || admins.isEmpty()) {
+			log.warn("No admin users found to send exam mail");
+			return;
+		}
 
-	    String[] toMails = admins.stream().filter(e->e.getEmail()!=null && !e.getEmail().isEmpty()).map(e->e.getEmail()).toArray(String[]::new);
-	    Thread emailThread = new Thread(() -> {
+		String[] toMails = admins.stream().filter(e -> e.getEmail() != null && !e.getEmail().isEmpty())
+				.map(e -> e.getEmail()).toArray(String[]::new);
+		Thread emailThread = new Thread(() -> {
 
 //	        for (User admin : admins) {
 
-	            try {
-	                MimeMessage mimeMessage = javaMailService.createMimeMessage();
-	                MimeMessageHelper helper =
-	                        new MimeMessageHelper(mimeMessage, true, "UTF-8");
+			try {
+				MimeMessage mimeMessage = javaMailService.createMimeMessage();
+				MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-	                String subject = "New Exam Created";
+				String subject = "New Exam Created";
 
-	                String content = String.format("""
-	                        <!DOCTYPE html>
-	                        <html>
-	                        <body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial">
+				String content = String.format("""
+						<!DOCTYPE html>
+						<html>
+						<body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial">
 
-	                        <table width="100%%" style="padding:20px">
-	                        <tr>
-	                        <td align="center">
+						<table width="100%%" style="padding:20px">
+						<tr>
+						<td align="center">
 
-	                        <table width="600" style="background:white;border-radius:10px;
-	                        box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden">
+						<table width="600" style="background:white;border-radius:10px;
+						box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden">
 
-	                        <tr>
-	                        <td style="background:#1976D2;color:white;padding:20px;text-align:center">
-	                        <h2 style="margin:0">New Exam Created</h2>
-	                        </td>
-	                        </tr>
+						<tr>
+						<td style="background:#1976D2;color:white;padding:20px;text-align:center">
+						<h2 style="margin:0">New Exam Created</h2>
+						</td>
+						</tr>
 
-	                        <tr>
-	                        <td style="padding:30px">
+						<tr>
+						<td style="padding:30px">
 
-	                        <p>Dear Admin</strong>,</p>
+						<p>Dear Admin</strong>,</p>
 
-	                        <p>A new exam has been created in the system.</p>
+						<p>A new exam has been created in the system.</p>
 
-	                        <table width="100%%" style="background:#f9fafb;
-	                        padding:15px;border-radius:8px">
+						<table width="100%%" style="background:#f9fafb;
+						padding:15px;border-radius:8px">
 
-	                        <tr>
-	                        <td style="padding:8px 0">
-	                        <strong>Class:</strong> %s
-	                        </td>
-	                        </tr>
+						<tr>
+						<td style="padding:8px 0">
+						<strong>Class:</strong> %s
+						</td>
+						</tr>
 
-	                        <tr>
-	                        <td style="padding:8px 0">
-	                        <strong>Full Marks:</strong> %s
-	                        </td>
-	                        </tr>
+						<tr>
+						<td style="padding:8px 0">
+						<strong>Full Marks:</strong> %s
+						</td>
+						</tr>
 
-	                        </table>
+						</table>
 
-	                        <p style="margin-top:20px">
-	                        Please login to the admin panel for more details.
-	                        </p>
+						<p style="margin-top:20px">
+						Please login to the admin panel for more details.
+						</p>
 
 
-	                        </td>
-	                        </tr>
+						</td>
+						</tr>
 
-	                        <tr>
-	                        <td style="background:#f1f1f1;text-align:center;
-	                        padding:15px;font-size:12px;color:#777">
-	                        © 2026 Exam System
-	                        </td>
-	                        </tr>
+						<tr>
+						<td style="background:#f1f1f1;text-align:center;
+						padding:15px;font-size:12px;color:#777">
+						© 2026 Exam System
+						</td>
+						</tr>
 
-	                        </table>
+						</table>
 
-	                        </td>
-	                        </tr>
-	                        </table>
+						</td>
+						</tr>
+						</table>
 
-	                        </body>
-	                        </html>
-	                        """,
-	                        exam.getStudentClass() != null ? exam.getStudentClass() : "ALL",
-	                        exam.getFullMark()
-	                );
+						</body>
+						</html>
+						""", exam.getStudentClass() != null ? exam.getStudentClass() : "ALL", exam.getFullMark());
 
-	                helper.setTo(toMails);
-	                helper.setSubject(subject);
-	                helper.setText(content, true);
+				helper.setTo(toMails);
+				helper.setSubject(subject);
+				helper.setText(content, true);
 
-	                javaMailService.send(mimeMessage);
+				javaMailService.send(mimeMessage);
 
-	                log.info("Exam mail sent to admin: {}", toMails);
+				log.info("Exam mail sent to admin: {}", toMails);
 
-	            } catch (Exception e) {
-	                log.error("Failed to send exam mail to {}", toMails, e);
-	            }
+			} catch (Exception e) {
+				log.error("Failed to send exam mail to {}", toMails, e);
+			}
 //	        }
 
-	    });
+		});
 
-	    emailThread.start();
+		emailThread.start();
+	}
+
+	public void sendCredentials(String email, String name, String userId, String password) {
+
+		Thread emailThread = new Thread(() -> {
+
+			try {
+
+				MimeMessage mimeMessage = javaMailService.createMimeMessage();
+
+				MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				String subject = "Registration Successful - Login Credentials";
+
+				String content = String.format("""
+						<!DOCTYPE html>
+						<html>
+						<body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial">
+
+						<table width="100%%" style="padding:20px">
+						<tr>
+						<td align="center">
+
+						<table width="600"
+						style="background:white;
+						border-radius:10px;
+						box-shadow:0 2px 8px rgba(0,0,0,0.08);
+						overflow:hidden">
+
+						<tr>
+						<td style="
+						    background:#1976D2;
+						    color:white;
+						    padding:20px;
+						    text-align:center">
+						    <h2 style="margin:0">
+						        Registration Successful
+						    </h2>
+						</td>
+						</tr>
+
+						<tr>
+						<td style="padding:30px">
+
+						<p>
+						    Dear <strong>%s</strong>,
+						</p>
+
+						<p>
+						    Your registration has been completed successfully.
+						</p>
+
+						<table width="100%%"
+						style="
+						    background:#f9fafb;
+						    padding:15px;
+						    border-radius:8px">
+
+						<tr>
+						<td style="padding:8px 0">
+						    <strong>User ID:</strong> %s
+						</td>
+						</tr>
+
+						<tr>
+						<td style="padding:8px 0">
+						    <strong>Password:</strong> %s
+						</td>
+						</tr>
+
+						</table>
+
+						<p style="margin-top:20px;color:#d32f2f">
+						    Please change your password after first login.
+						</p>
+
+						<p>
+						    Regards,<br>
+						    <strong>Genius Guidelines</strong>
+						</p>
+
+						</td>
+						</tr>
+
+						<tr>
+						<td style="
+						    background:#f1f1f1;
+						    text-align:center;
+						    padding:15px;
+						    font-size:12px;
+						    color:#777">
+						    © Genius Guidelines
+						</td>
+						</tr>
+
+						</table>
+
+						</td>
+						</tr>
+						</table>
+
+						</body>
+						</html>
+						""", name, userId, password);
+
+				helper.setTo(email);
+				helper.setSubject(subject);
+				helper.setText(content, true);
+
+				javaMailService.send(mimeMessage);
+
+				log.info("Credentials mail sent successfully to {}", email);
+
+			} catch (Exception e) {
+
+				log.error("Failed to send credentials mail to {}", email, e);
+			}
+
+		});
+
+		emailThread.start();
 	}
 }

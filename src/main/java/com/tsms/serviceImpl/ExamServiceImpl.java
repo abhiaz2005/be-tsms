@@ -19,67 +19,130 @@ import com.tsms.repository.ExamRepository;
 import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.service.ExamService;
 
+import jakarta.validation.Valid;
+
 @Service
 public class ExamServiceImpl implements ExamService {
 
 	@Autowired
-	private ExamRepository examRepository ;
-	
+	private ExamRepository examRepository;
+
 	@Autowired
-	private EmailService emailService ;
-	
+	private EmailService emailService;
+
 	@Autowired
-	private CustomizedUserDetailsService customizedUserDetailsService ;
-	
-	private final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class); 
-	
-	
+	private CustomizedUserDetailsService customizedUserDetailsService;
+
+	private final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class);
+
 	@Override
 	public Response<?> createExam(ExamDto examDto) {
 		try {
 			Optional<User> userDetails = customizedUserDetailsService.getUserDetails();
-			if(userDetails.isEmpty()) {
+			if (userDetails.isEmpty()) {
 				logger.info("Autorization err");
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Please login again", null);
 			}
-			if(!userDetails.get().getRole().equals(Role.ADMIN)) {
+			if (!userDetails.get().getRole().equals(Role.ADMIN)) {
 				logger.info("Another user another than admin trying to create exam.");
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
 			}
 			Exam exam = new Exam();
-			exam.setStudentClass(examDto.getStudentClass()!=null ? examDto.getStudentClass():null);
+			exam.setStudentClass(examDto.getStudentClass() != null ? examDto.getStudentClass() : null);
 			exam.setFullMark(examDto.getFullMark());
 			exam.setExamName(examDto.getExamName());
 			exam.setCreatedAt(new Date());
 			examRepository.save(exam);
-			logger.info("New exam saved for {} class & fullmark {}",examDto.getStudentClass()!=null ? examDto.getStudentClass():"ALL" ,examDto.getFullMark() );
-			
-			new Thread(()->{
+			logger.info("New exam saved for {} class & fullmark {}",
+					examDto.getStudentClass() != null ? examDto.getStudentClass() : "ALL", examDto.getFullMark());
+
+			new Thread(() -> {
 				emailService.sendExamCreatedMail(exam);
 			}).start();
 			return new Response<>(HttpStatus.OK.value(), "Exam saved successfully", null);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
 		}
 	}
 
-
 	@Override
 	public Response<?> getAllExam() {
 		try {
 			Optional<User> userDetails = customizedUserDetailsService.getUserDetails();
-			if(userDetails.isEmpty()) {
+			if (userDetails.isEmpty()) {
 				logger.info("Autorization err");
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Please login again", null);
 			}
-			if(!userDetails.get().getRole().equals(Role.ADMIN)) {
+			if (!userDetails.get().getRole().equals(Role.ADMIN)) {
 				logger.info("Another user another than admin trying to create exam.");
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
 			}
 			List<Exam> exams = examRepository.findAll();
 			return new Response<>(HttpStatus.OK.value(), "Success", exams);
-		}catch(Exception e) {
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+	@Override
+	public Response<?> editExam(@Valid ExamDto exam) {
+		try {
+			Optional<User> userDetails = customizedUserDetailsService.getUserDetails();
+			if (userDetails.isEmpty()) {
+				logger.info("Autorization err");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Please login again", null);
+			}
+			if (!userDetails.get().getRole().equals(Role.ADMIN)) {
+				logger.info("Another user another than admin trying to create exam.");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
+			}
+			if (exam.getId() == null) {
+				logger.info("Id is null");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "provide exam Id for update", null);
+			}
+			Optional<Exam> examOptional = examRepository.findById(exam.getId());
+			if (examOptional.isEmpty()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Exam not present with this id", null);
+			}
+			Exam examToBeUpdated = examOptional.get();
+			if (exam.getClass() != null) {
+				examToBeUpdated.setStudentClass(exam.getStudentClass());
+			}
+			if (exam.getExamName() != null) {
+				examToBeUpdated.setExamName(exam.getExamName());
+			}
+			if (exam.getFullMark() != null) {
+				examToBeUpdated.setFullMark(exam.getFullMark());
+			}
+			examRepository.save(examToBeUpdated);
+			return new Response<>(HttpStatus.OK.value(), "Exam updated successfuly", null);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
+		}
+	}
+
+	@Override
+	public Response<?> deleteExam(Long id) {
+		try {
+			Optional<User> userDetails = customizedUserDetailsService.getUserDetails();
+			if (userDetails.isEmpty()) {
+				logger.info("Autorization err");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Please login again", null);
+			}
+			if (!userDetails.get().getRole().equals(Role.ADMIN)) {
+				logger.info("Another user another than admin trying to create exam.");
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
+			}
+			Optional<Exam> examOptional = examRepository.findById(id);
+			if (examOptional.isEmpty()) {
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "Exam not present with this id", null);
+			}
+			examRepository.delete(examOptional.get());
+			return new Response<>(HttpStatus.OK.value(), "Exam deleted successfuly", null);
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
 		}

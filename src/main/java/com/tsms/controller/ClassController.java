@@ -3,6 +3,7 @@ package com.tsms.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,49 +13,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tsms.dto.ExamDto;
 import com.tsms.dto.Response;
-import com.tsms.service.ExamService;
+import com.tsms.entity.StudentClass;
+import com.tsms.service.ClassService;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/exam")
-public class ExamController {
-
-    private final Response response;
-
+@CrossOrigin
+@RequestMapping("/api")
+public class ClassController {
+	
 	@Autowired
-	private ExamService examService ;
+	private ClassService classService ;
+	
+	@GetMapping("get/all/class")
+	public ResponseEntity<?> getAllClass() {
+		Response<?> response  = classService.getAllClass();
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+	}
+	
+	@PostMapping("add/class")
+	public ResponseEntity<?> createClass(@Valid @RequestBody StudentClass studentClass) {
+		Response<?> response  = classService.createClass(studentClass);
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+	}
+	
+	@DeleteMapping("delete/class/{id}")
+	public ResponseEntity<?> editClass(@PathVariable Long id) {
+		Response<?> response  = classService.deleteClass(id);
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+	}
+	
+	
 
-    ExamController(Response response) {
-        this.response = response;
-    }
-	
-	@PostMapping("add")
-	public ResponseEntity<?> createExam(@Valid @RequestBody ExamDto exam) {
-		Response<?> response  = examService.createExam(exam);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
-	}
-	
-	@GetMapping("all")
-	public ResponseEntity<?> getAllExam() {
-		Response<?> response  = examService.getAllExam();
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
-	}
-	
-	@PutMapping("edit")
-	public ResponseEntity<?> editExam(@Valid @RequestBody ExamDto exam) {
-		Response<?> response  = examService.editExam(exam);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
-	}
-	
-	@DeleteMapping("delete/{id}")
-	public ResponseEntity<?> deleteExam( @PathVariable Long id) {
-		Response<?> response  = examService.deleteExam(id);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
-	}
-	
-	
-	
 }

@@ -26,7 +26,7 @@ public class FeesController {
 	
 	@GetMapping("all")
 	public ResponseEntity<?> getAllFees() {
-		Response<?> response  = feesService.getAllFees();
+		Response<?> response  = feesService.getAllFeesV2();
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
@@ -36,7 +36,7 @@ public class FeesController {
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
-	@PostMapping()
+	@PostMapping("/add")
 	public ResponseEntity<?> createNewFee(@RequestBody List<FeesDto> fees) {
 		Response<?> response  = feesService.createBulkFee(fees);
 		return new ResponseEntity<>(response,HttpStatus.OK);

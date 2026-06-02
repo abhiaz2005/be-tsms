@@ -99,7 +99,15 @@ public class UserServiceImpl implements UserService {
 			user.setPresentAddress(presentAddress);
 			User savedUser = userRepository.save(user);
 			logger.info("User saved");
-
+			
+			new Thread(()->{
+				emailService.sendCredentials(
+				        savedUser.getEmail(),
+				        savedUser.getName(),
+				        savedUser.getEmail(),
+				        pass
+				);
+			}).start();
 			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
 
 		} catch (Exception e) {
@@ -186,7 +194,7 @@ public class UserServiceImpl implements UserService {
 				List<User> users = userRepository.findAll();
 				List<UserDto> userList = users.stream()
 					.filter(e -> e != null)
-					.filter(e -> !e.getRole().equals(Role.ADMIN))
+					.filter(e -> e.getRole().equals(Role.USER))
 					.map(e -> {
 						UserDto userDto = e.convertToDto();
 						Date dob = e.getDob();

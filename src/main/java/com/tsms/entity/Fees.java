@@ -9,7 +9,7 @@ import com.tsms.enums.PaymentMode;
 
 @Entity
 @Table(name = "fees")
-public class Fees {
+public class 	Fees {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,7 @@ public class Fees {
 	private Date paymentDate;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "payment_mode")
 	private PaymentMode mode;
 	
 	

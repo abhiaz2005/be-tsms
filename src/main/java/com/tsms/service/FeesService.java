@@ -8,6 +8,8 @@ import com.tsms.dto.Response;
 public interface FeesService {
 
 	Response<?> getAllFees();
+	
+	Response<?> getAllFeesV2();
 
 	Response<?> getAllFeesByStudent(Long id);
 
