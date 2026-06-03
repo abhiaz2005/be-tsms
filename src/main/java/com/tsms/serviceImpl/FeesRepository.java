@@ -18,6 +18,9 @@ public interface FeesRepository extends JpaRepository<Fees, Long> {
 
 	boolean existsByStudentAndMonthAndYear(User student,Integer month,Integer year);
 
+	@Query(value = "select * from fees where year=?1",nativeQuery = true)
+	List<Fees> findAllByYear(Integer year);
+
 
 	
 }

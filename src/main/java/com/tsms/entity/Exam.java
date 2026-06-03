@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,14 +22,19 @@ public class Exam {
 	@Column(name = "exam_name")
 	private String examName; 
 
-	@Column(name = "student_class")
-	private String studentClass; 
+//	@Column(name = "student_class")
+//	private String studentClass; 
+	
 
 	@Column(name = "full_mark")
 	private Double fullMark;
 	
 	@Column(name = "created_at")
 	private Date createdAt ;
+	
+	@ManyToOne
+    @JoinColumn(name = "class_subject_id")
+    private ClassSubject classSubject;
 
 	public Long getId() {
 		return id;
@@ -67,6 +74,16 @@ public class Exam {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
+	}
+	
+	
+
+	public ClassSubject getClassSubject() {
+		return classSubject;
+	}
+
+	public void setClassSubject(ClassSubject classSubject) {
+		this.classSubject = classSubject;
 	}
 
 	public Exam() {

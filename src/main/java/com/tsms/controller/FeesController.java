@@ -20,26 +20,32 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 @RequestMapping("/api/fees")
 public class FeesController {
+
+    private final Response response;
 	
 	@Autowired
 	private FeesService feesService ;
+
+    FeesController(Response response) {
+        this.response = response;
+    }
 	
 	@GetMapping("all")
-	public ResponseEntity<?> getAllFees() {
-		Response<?> response  = feesService.getAllFeesV2();
-		return new ResponseEntity<>(response,HttpStatus.OK);
+	public ResponseEntity<?> getAllFees(@RequestParam(required = false) Integer year) {
+		Response<?> response  = feesService.getAllFeesV2(year);
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@GetMapping()
 	public ResponseEntity<?> getAllFeesByStudent(@RequestParam(required = false) Long id) {
 		Response<?> response  = feesService.getAllFeesByStudent(id);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PostMapping("/add")
 	public ResponseEntity<?> createNewFee(@RequestBody List<FeesDto> fees) {
 		Response<?> response  = feesService.createBulkFee(fees);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 }

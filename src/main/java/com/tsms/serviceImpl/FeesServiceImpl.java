@@ -56,16 +56,23 @@ public class FeesServiceImpl implements FeesService {
 	}
 	
 	@Override
-	public Response<?> getAllFeesV2() {
+	public Response<?> getAllFeesV2(Integer year) {
 	    try {
 
+	    	if(year == null) {
+	    		return new Response<>(
+                        HttpStatus.BAD_REQUEST.value(),
+                        "Please provide year",
+                        Collections.emptyList()
+                );
+	    	}
 	        Optional<User> userDetailsOptional =
 	                customizedUserDetailsService.getUserDetails();
 
 	        if (userDetailsOptional.isPresent()
 	                && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
 
-	            List<Fees> feesList = feesRepository.findAll();
+	            List<Fees> feesList = feesRepository.findAllByYear(year);
 
 	            if (feesList.isEmpty()) {
 	                return new Response<>(

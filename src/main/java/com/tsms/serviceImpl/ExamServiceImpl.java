@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.tsms.dto.ExamDto;
 import com.tsms.dto.Response;
+import com.tsms.entity.ClassSubject;
 import com.tsms.entity.Exam;
 import com.tsms.entity.User;
 import com.tsms.enums.Role;
+import com.tsms.repository.ClassSubjectRepository;
 import com.tsms.repository.ExamRepository;
 import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.service.ExamService;
@@ -35,6 +37,9 @@ public class ExamServiceImpl implements ExamService {
 
 	private final Logger logger = LoggerFactory.getLogger(ExamServiceImpl.class);
 
+	@Autowired
+	private ClassSubjectRepository classSubjectRepository;
+
 	@Override
 	public Response<?> createExam(ExamDto examDto) {
 		try {
@@ -47,10 +52,15 @@ public class ExamServiceImpl implements ExamService {
 				logger.info("Another user another than admin trying to create exam.");
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "You've no permission to create exam", null);
 			}
+			Optional<ClassSubject> classSubject = classSubjectRepository.findById(examDto.getClassSubjectId());
+			if (classSubject.isEmpty())
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "ClassSubject not found", null);
+
 			Exam exam = new Exam();
 			exam.setStudentClass(examDto.getStudentClass() != null ? examDto.getStudentClass() : null);
 			exam.setFullMark(examDto.getFullMark());
 			exam.setExamName(examDto.getExamName());
+			exam.setClassSubject(classSubject.get());
 			exam.setCreatedAt(new Date());
 			examRepository.save(exam);
 			logger.info("New exam saved for {} class & fullmark {}",
@@ -115,6 +125,12 @@ public class ExamServiceImpl implements ExamService {
 			}
 			if (exam.getFullMark() != null) {
 				examToBeUpdated.setFullMark(exam.getFullMark());
+			}
+			if (exam.getClassSubjectId() != null) {
+			    Optional<ClassSubject> cs = classSubjectRepository.findById(exam.getClassSubjectId());
+			    if (cs.isEmpty())
+			        return new Response<>(HttpStatus.BAD_REQUEST.value(), "ClassSubject not found", null);
+			    examToBeUpdated.setClassSubject(cs.get());
 			}
 			examRepository.save(examToBeUpdated);
 			return new Response<>(HttpStatus.OK.value(), "Exam updated successfuly", null);

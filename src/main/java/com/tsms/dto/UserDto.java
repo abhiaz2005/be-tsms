@@ -6,34 +6,35 @@ import com.tsms.entity.Address;
 import com.tsms.enums.Role;
 
 public class UserDto {
-private Long id ;
+	private Long id;
 
-private String image ;
+	private String image;
+
+	private String name;
+
+	private String email;
+
+	private Role role;
+
+	private Integer age;
+
+	private String gender;
+
+	private Date dob;
+
+	private String fatherName;
+
+	private String motherName;
+
+	private String section;
+
+	private Date studiedFrom;
 	
-	private String name ;
-	
-	private String email ;
-	
-	private Role role ;
-	
-	private Integer age ;
-	
-	private String gender ;
-	
-	private Date dob ;
-	
-	private String fatherName ;
-	
-	private String motherName ;
-	
-	private String section ;
-	
-	private Date studiedFrom ;
+	private String phoneNo ;
 
 	private Address presentAddress;
 
-    private Address permanentAddress;
-    
+	private Address permanentAddress;
 
 	public Long getId() {
 		return id;
@@ -138,8 +139,6 @@ private String image ;
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-	
-	
 
 	public String getGender() {
 		return gender;
@@ -148,21 +147,32 @@ private String image ;
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
+	
+	
+
+	public String getPhoneNo() {
+		return phoneNo;
+	}
+
+	public void setPhoneNo(String phoneNo) {
+		this.phoneNo = phoneNo;
+	}
 
 	public UserDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDto(Long id, String image, String name, String email, Role role,String gender , Date dob, String fatherName,
-			String motherName, String section, Date studiedFrom, Address presentAddress, Address permanentAddress) {
+	public UserDto(Long id, String image, String name, String email, Role role, String gender, Date dob,
+			String fatherName, String motherName, String section, Date studiedFrom, Address presentAddress,
+			Address permanentAddress) {
 		super();
 		this.id = id;
 		this.image = image;
 		this.name = name;
 		this.email = email;
 		this.role = role;
-		this.gender = gender ;
+		this.gender = gender;
 		this.dob = dob;
 		this.fatherName = fatherName;
 		this.motherName = motherName;
@@ -171,9 +181,5 @@ private String image ;
 		this.presentAddress = presentAddress;
 		this.permanentAddress = permanentAddress;
 	}
-    
-    
-    
-    
-    
+
 }

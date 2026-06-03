@@ -9,7 +9,7 @@ public interface FeesService {
 
 	Response<?> getAllFees();
 	
-	Response<?> getAllFeesV2();
+	Response<?> getAllFeesV2(Integer year);
 
 	Response<?> getAllFeesByStudent(Long id);
 

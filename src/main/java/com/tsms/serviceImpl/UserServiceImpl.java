@@ -53,12 +53,12 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private CustomizedUserDetailsService customizedUserDetailsService;
-	
+
 	@Autowired
-	private InMemCache inMemCache ;
-	
+	private InMemCache inMemCache;
+
 	@Autowired
-	private EmailService emailService ;
+	private EmailService emailService;
 
 	@Override
 	public Response<?> register(RegisterRequest request) {
@@ -69,9 +69,10 @@ public class UserServiceImpl implements UserService {
 			}
 			Optional<User> userPhoneOptional = userRepository.findByPhoneNo(request.getPhoneNo());
 			if (userPhoneOptional.isPresent()) {
-				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists", null);
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists",
+						null);
 			}
-			
+
 			User user = new User();
 			user.setEmail(request.getEmail());
 			user.setDob(request.getDob());
@@ -99,14 +100,9 @@ public class UserServiceImpl implements UserService {
 			user.setPresentAddress(presentAddress);
 			User savedUser = userRepository.save(user);
 			logger.info("User saved");
-			
-			new Thread(()->{
-				emailService.sendCredentials(
-				        savedUser.getEmail(),
-				        savedUser.getName(),
-				        savedUser.getEmail(),
-				        pass
-				);
+
+			new Thread(() -> {
+				emailService.sendCredentials(savedUser.getEmail(), savedUser.getName(), savedUser.getEmail(), pass);
 			}).start();
 			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
 
@@ -115,7 +111,7 @@ public class UserServiceImpl implements UserService {
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
 		}
 	}
-	
+
 	public Response<?> registerAdmin(RegisterRequest request) {
 		try {
 			Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
@@ -124,14 +120,15 @@ public class UserServiceImpl implements UserService {
 			}
 			Optional<User> userPhoneOptional = userRepository.findByPhoneNo(request.getPhoneNo());
 			if (userPhoneOptional.isPresent()) {
-				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists", null);
+				return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this phone number already exists",
+						null);
 			}
-			
+
 			User user = new User();
 			user.setEmail(request.getEmail());
 			user.setDob(request.getDob());
 			user.setName(request.getName());
-			if(request.getName()==null || request.getName().isEmpty()) {
+			if (request.getName() == null || request.getName().isEmpty()) {
 				return new Response<>(HttpStatus.BAD_REQUEST.value(), "admin-please provide name", null);
 			}
 			String firstName = request.getName().trim().split("\\s+")[0];
@@ -144,8 +141,8 @@ public class UserServiceImpl implements UserService {
 			User savedUser = userRepository.save(user);
 			savedUser.setPassword(pass);
 			logger.info("User saved");
-			//thread used for speed application
-			new Thread(()->{
+			// thread used for speed application
+			new Thread(() -> {
 				emailService.sendAccountConfirmationMail(savedUser);
 			}).start();
 			return new Response<>(HttpStatus.OK.value(), "Registration successful", null);
@@ -192,21 +189,20 @@ public class UserServiceImpl implements UserService {
 			if (userDetailsOptional.isPresent() && userDetailsOptional.get().getRole().equals(Role.ADMIN)) {
 
 				List<User> users = userRepository.findAll();
-				List<UserDto> userList = users.stream()
-					.filter(e -> e != null)
-					.filter(e -> e.getRole().equals(Role.USER))
-					.map(e -> {
-						UserDto userDto = e.convertToDto();
-						Date dob = e.getDob();
-						if (dob != null) {
-							LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-							LocalDate now = LocalDate.now();
-							userDto.setAge(Period.between(birthDate, now).getYears());
-						}else {
-							userDto.setAge(null);	
-						}
-						return userDto;
-					}).collect(Collectors.toList());
+				List<UserDto> userList = users.stream().filter(e -> e != null)
+						.filter(e -> e.getRole().equals(Role.USER)).map(e -> {
+							UserDto userDto = e.convertToDto();
+							Date dob = e.getDob();
+							if (dob != null) {
+								LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+								LocalDate now = LocalDate.now();
+								userDto.setAge(Period.between(birthDate, now).getYears());
+							} else {
+								userDto.setAge(null);
+							}
+							userDto.setPhoneNo(e.getPhoneNo()!=null?e.getPhoneNo():null);
+							return userDto;
+						}).collect(Collectors.toList());
 				return new Response<>(HttpStatus.OK.value(), "success.",
 						userList.isEmpty() ? Collections.emptyList() : userList);
 			}
@@ -231,8 +227,8 @@ public class UserServiceImpl implements UserService {
 					LocalDate birthDate = dob.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 					LocalDate now = LocalDate.now();
 					userDto.setAge(Period.between(birthDate, now).getYears());
-				}else {
-					userDto.setAge(null);	
+				} else {
+					userDto.setAge(null);
 				}
 				return new Response<>(HttpStatus.OK.value(), "success.", userDto);
 			}
@@ -248,12 +244,12 @@ public class UserServiceImpl implements UserService {
 	public Response<?> verifyOtp(OtpRequest request) {
 		try {
 			boolean isVerified = inMemCache.verifyOtp(request.getEmail(), request.getOtp());
-			if(isVerified) {
+			if (isVerified) {
 				return new Response<>(HttpStatus.OK.value(), "Email verified", null);
 			}
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Invalid OTP", null);
 
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something went wrong", null);
 		}
@@ -265,10 +261,136 @@ public class UserServiceImpl implements UserService {
 			emailService.sendPasswordResetEmail(request);
 			inMemCache.storeOtp(request.getEmail());
 			return new Response<>(HttpStatus.OK.value(), "email sent", null);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new Response<>(HttpStatus.BAD_REQUEST.value(), "something error in sending otp	", null);
 		}
+	}
+
+	@Override
+	public Response<?> updateStudent(UserDto request) {
+		try {
+			Optional<User> userDetailsOptional = customizedUserDetailsService.getUserDetails();
+
+			if (userDetailsOptional.isEmpty()) {
+			    return new Response<>(
+			            HttpStatus.UNAUTHORIZED.value(),
+			            "User not authenticated",
+			            null);
+			}
+
+			User loggedInUser = userDetailsOptional.get();
+
+			if (!Role.ADMIN.equals(loggedInUser.getRole())) {
+
+			    if (!loggedInUser.getId().equals(request.getId())) {
+			        return new Response<>(
+			                HttpStatus.BAD_REQUEST.value(),
+			                "You have no access to update another user",
+			                null);
+			    }
+			}
+			Optional<User> userOptional = userRepository.findById(request.getId());
+
+			if (userOptional.isEmpty()) {
+				return new Response<>(HttpStatus.NOT_FOUND.value(), "User not found", null);
+			}
+
+			User user = userOptional.get();
+
+			// Email duplicate check
+			if (request.getEmail() != null && !request.getEmail().equalsIgnoreCase(user.getEmail())) {
+
+				Optional<User> emailUser = userRepository.findByEmail(request.getEmail());
+
+				if (emailUser.isPresent()) {
+					return new Response<>(HttpStatus.BAD_REQUEST.value(), "User with this email already exists", null);
+				}
+
+				user.setEmail(request.getEmail());
+			}
+
+			// Basic Details
+			if (request.getName() != null) {
+			    user.setName(request.getName());
+			}
+
+			if (request.getDob() != null) {
+			    user.setDob(request.getDob());
+			}
+
+			if (request.getGender() != null) {
+			    user.setGender(request.getGender());
+			}
+
+			if (request.getFatherName() != null) {
+			    user.setFatherName(request.getFatherName());
+			}
+
+			if (request.getMotherName() != null) {
+			    user.setMotherName(request.getMotherName());
+			}
+
+			if (request.getSection() != null) {
+			    user.setSection(request.getSection());
+			}
+
+			if (request.getStudiedFrom() != null) {
+			    user.setStudiedFrom(request.getStudiedFrom());
+			}
+			
+			if(request.getPhoneNo() !=null) {
+				user.setPhoneNo(request.getPhoneNo());
+			}
+
+			// Present Address Update
+			if (request.getPresentAddress() != null) {
+
+				Address presentAddress = user.getPresentAddress();
+
+				if (presentAddress == null) {
+					presentAddress = new Address();
+				}
+
+				copyAddress(request.getPresentAddress(), presentAddress);
+
+				presentAddress = addressRepository.save(presentAddress);
+
+				user.setPresentAddress(presentAddress);
+			}
+
+			// Permanent Address Update
+			if (request.getPermanentAddress() != null) {
+
+				Address permanentAddress = user.getPermanentAddress();
+
+				if (permanentAddress == null) {
+					permanentAddress = new Address();
+				}
+
+				copyAddress(request.getPermanentAddress(), permanentAddress);
+
+				permanentAddress = addressRepository.save(permanentAddress);
+
+				user.setPermanentAddress(permanentAddress);
+			}
+
+			userRepository.save(user);
+
+			return new Response<>(HttpStatus.OK.value(), "User updated successfully", null);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
+		}
+	}
+
+	private void copyAddress(Address source, Address target) {
+		target.setCity(source.getCity());
+		target.setState(source.getState());
+		target.setStreet(source.getStreet());
+		target.setPincode(source.getPincode());
+
 	}
 
 }

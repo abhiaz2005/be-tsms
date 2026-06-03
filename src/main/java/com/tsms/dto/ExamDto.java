@@ -9,11 +9,13 @@ public class ExamDto {
 
 	@NotBlank(message = "examName is required")
 	@NotNull(message = "examName is required")
-	private String examName; 
+	private String examName;
 
-	private String studentClass; 
+	private String studentClass;
 
 	private Double fullMark;
+	
+	private Long classSubjectId;
 
 	public Long getId() {
 		return id;
@@ -46,6 +48,16 @@ public class ExamDto {
 	public void setFullMark(Double fullMark) {
 		this.fullMark = fullMark;
 	}
+	
+	
+
+	public Long getClassSubjectId() {
+		return classSubjectId;
+	}
+
+	public void setClassSubjectId(Long classSubjectId) {
+		this.classSubjectId = classSubjectId;
+	}
 
 	public ExamDto() {
 		super();
@@ -60,5 +72,4 @@ public class ExamDto {
 		this.fullMark = fullMark;
 	}
 
-	
 }

@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import com.tsms.dto.LoginRequest;
 import com.tsms.dto.OtpRequest;
 import com.tsms.dto.RegisterRequest;
 import com.tsms.dto.Response;
+import com.tsms.dto.UserDto;
 import com.tsms.service.UserService;
 
 import jakarta.validation.Valid;
@@ -63,6 +65,12 @@ public class UserController {
 	@GetMapping("api/get/student")
 	public ResponseEntity<?> getStudentById(@RequestParam(required = false)Long id) {
 		Response<?> response  = userService.getStudentById(id);
+		return new ResponseEntity<>(response,HttpStatus.OK);
+	}
+	
+	@PutMapping("api/update/user")
+	public ResponseEntity<?> updateStudent(@RequestBody UserDto request) {
+		Response<?> response  = userService.updateStudent(request);
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 
