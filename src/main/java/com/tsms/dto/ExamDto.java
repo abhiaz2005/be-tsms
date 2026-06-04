@@ -11,7 +11,7 @@ public class ExamDto {
 	@NotNull(message = "examName is required")
 	private String examName;
 
-	private String studentClass;
+//	private String studentClass;
 
 	private Double fullMark;
 	
@@ -33,13 +33,13 @@ public class ExamDto {
 		this.examName = examName;
 	}
 
-	public String getStudentClass() {
-		return studentClass;
-	}
-
-	public void setStudentClass(String studentClass) {
-		this.studentClass = studentClass;
-	}
+//	public String getStudentClass() {
+//		return studentClass;
+//	}
+//
+//	public void setStudentClass(String studentClass) {
+//		this.studentClass = studentClass;
+//	}
 
 	public Double getFullMark() {
 		return fullMark;
@@ -64,11 +64,10 @@ public class ExamDto {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExamDto(Long id, String examName, String studentClass, Double fullMark) {
+	public ExamDto(Long id, String examName,  Double fullMark) {
 		super();
 		this.id = id;
 		this.examName = examName;
-		this.studentClass = studentClass;
 		this.fullMark = fullMark;
 	}
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.tsms.entity.StudentClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,7 +84,7 @@ public class UserServiceImpl implements UserService {
 			user.setPassword(passwordEncoder.encode(pass));
 			user.setRole(Role.USER);
 			user.setIsActive(true);
-			user.setSection(request.getSection());
+//			user.setSection(new StudentClass(request.getSectionId()));
 			user.setGender(request.getGender());
 			user.setPhoneNo(request.getPhoneNo());
 			user.setFatherName(request.getFatherName());
@@ -331,8 +332,8 @@ public class UserServiceImpl implements UserService {
 			    user.setMotherName(request.getMotherName());
 			}
 
-			if (request.getSection() != null) {
-			    user.setSection(request.getSection());
+			if (request.getSectionId() != null) {
+			    user.setSection(new StudentClass(request.getSectionId()));
 			}
 
 			if (request.getStudiedFrom() != null) {

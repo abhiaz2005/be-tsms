@@ -1,4 +1,4 @@
-package com.tsms.serviceImpl;
+package com.tsms.repository;
 
 import java.util.List;
 

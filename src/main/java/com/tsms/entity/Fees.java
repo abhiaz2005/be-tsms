@@ -35,6 +35,9 @@ public class 	Fees {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "payment_mode")
 	private PaymentMode mode;
+
+	@Column(name = "created_at")
+	private Date createdAt;
 	
 	
 
@@ -94,6 +97,14 @@ public class 	Fees {
 
 	public void setMode(PaymentMode mode) {
 		this.mode = mode;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public Fees() {

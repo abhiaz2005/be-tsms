@@ -51,9 +51,10 @@ public class User {
 	
 	@Column(name = "mother_name")
 	private String motherName ;
-	
-	@Column(name = "section")
-	private String section ;
+
+	@ManyToOne
+	@JoinColumn(name = "class_id")
+	private StudentClass section ;
 	
 	@Column(name = "phone_number")
 	private String phoneNo ;
@@ -165,11 +166,11 @@ public class User {
 		this.motherName = motherName;
 	}
 
-	public String getSection() {
+	public StudentClass getSection() {
 		return section;
 	}
 
-	public void setSection(String section) {
+	public void setSection(StudentClass section) {
 		this.section = section;
 	}
 
@@ -220,7 +221,7 @@ public class User {
 
 
 	public User(Long id, String name, String image, String email, String gender, String password, Role role, Date dob,
-			String fatherName, String motherName, String section, String phoneNo, Date studiedFrom,
+			String fatherName, String motherName, StudentClass section, String phoneNo, Date studiedFrom,
 			Address presentAddress, Address permanentAddress, Boolean isActive) {
 		super();
 		this.id = id;

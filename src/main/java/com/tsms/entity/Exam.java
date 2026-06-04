@@ -52,13 +52,13 @@ public class Exam {
 		this.examName = examName;
 	}
 
-	public String getStudentClass() {
-		return studentClass;
-	}
-
-	public void setStudentClass(String studentClass) {
-		this.studentClass = studentClass;
-	}
+//	public String getStudentClass() {
+//		return studentClass;
+//	}
+//
+//	public void setStudentClass(String studentClass) {
+//		this.studentClass = studentClass;
+//	}
 
 	public Double getFullMark() {
 		return fullMark;
@@ -91,11 +91,11 @@ public class Exam {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Exam(Long id, String examName, String studentClass, Double fullMark, Date createdAt) {
+	public Exam(Long id, String examName, Double fullMark, Date createdAt) {
 		super();
 		this.id = id;
 		this.examName = examName;
-		this.studentClass = studentClass;
+//		this.studentClass = studentClass;
 		this.fullMark = fullMark;
 		this.createdAt = createdAt;
 	}

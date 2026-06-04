@@ -14,4 +14,9 @@ public interface ClassSubjectService {
 
 	Response<?> delete(Long id);
 
+    Response<?> bySubectGetAllOrGetSubjectById();
+
+	Response<?> deleteBySubjectId(Long subjectId);
+
+	Response<?> getBySubjectId(Long subjectId);
 }

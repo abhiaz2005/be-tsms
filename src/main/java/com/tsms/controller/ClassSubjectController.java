@@ -3,14 +3,7 @@ package com.tsms.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.tsms.dto.ClassSubjectDto;
 import com.tsms.dto.Response;
@@ -41,6 +34,12 @@ public class ClassSubjectController {
 		return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
 	}
 
+	@GetMapping("by-subject/{subjectId}")
+	public ResponseEntity<?> getBySubjectId(@PathVariable Long subjectId) {
+		Response<?> res = classSubjectService.getBySubjectId(subjectId);
+		return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
+	}
+
 	@PutMapping("edit")
 	public ResponseEntity<?> edit(@RequestBody ClassSubjectDto dto) {
 		Response<?> res = classSubjectService.edit(dto);
@@ -50,6 +49,18 @@ public class ClassSubjectController {
 	@DeleteMapping("delete/{id}")
 	public ResponseEntity<?> delete(@PathVariable Long id) {
 		Response<?> res = classSubjectService.delete(id);
+		return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
+	}
+
+	@DeleteMapping("delete/all/by/subjectId")
+	public ResponseEntity<?> deleteBySubjectId(@RequestParam Long subjectId) {
+		Response<?> res = classSubjectService.deleteBySubjectId(subjectId);
+		return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
+	}
+
+	@GetMapping("group/by/subject")
+	public ResponseEntity<?> bySubectGetAllOrGetSubjectById() {
+		Response<?> res = classSubjectService.bySubectGetAllOrGetSubjectById();
 		return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
 	}
 }

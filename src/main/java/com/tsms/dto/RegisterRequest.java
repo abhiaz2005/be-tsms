@@ -25,6 +25,8 @@ public class RegisterRequest {
 	
 //	@NotBlank(message = "Section is required")
 	private String section ;
+
+	private Long sectionId;
 	
 	@NotBlank(message = "Gender is required")
 	private String gender ;
@@ -155,6 +157,14 @@ public class RegisterRequest {
 
 	public void setSection(String section) {
 		this.section = section;
+	}
+
+	public Long getSectionId() {
+		return sectionId;
+	}
+
+	public void setSectionId(Long sectionId) {
+		this.sectionId = sectionId;
 	}
 
 	public RegisterRequest() {

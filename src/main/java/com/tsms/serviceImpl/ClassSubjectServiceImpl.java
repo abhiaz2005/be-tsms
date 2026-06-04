@@ -1,9 +1,9 @@
 package com.tsms.serviceImpl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.tsms.dto.ClassSubjectWiseSubjectDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +22,7 @@ import com.tsms.repository.ClassSubjectRepository;
 import com.tsms.repository.SubjectRepository;
 import com.tsms.security.CustomizedUserDetailsService;
 import com.tsms.service.ClassSubjectService;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ClassSubjectServiceImpl implements ClassSubjectService {
@@ -142,6 +143,76 @@ public class ClassSubjectServiceImpl implements ClassSubjectService {
 
             classSubjectRepository.delete(optional.get());
             return new Response<>(HttpStatus.OK.value(), "Deleted successfully", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
+        }
+    }
+
+    @Override
+    public Response<?> bySubectGetAllOrGetSubjectById() {
+        try {
+            if (!isAdmin())
+                return new Response<>(HttpStatus.FORBIDDEN.value(), "No permission", null);
+
+
+            List<ClassSubject> list = classSubjectRepository.findAll();
+
+            Map<Long, List<ClassSubject>> grouped =
+                    list.stream()
+                            .collect(Collectors.groupingBy(
+                                    cs -> cs.getSubject().getId()));
+
+            List<ClassSubjectWiseSubjectDto> result = new ArrayList<>();
+
+            for (Map.Entry<Long, List<ClassSubject>> entry : grouped.entrySet()) {
+
+                List<ClassSubject> classSubjects = entry.getValue();
+
+                ClassSubjectWiseSubjectDto dto =
+                        new ClassSubjectWiseSubjectDto();
+
+                dto.setId(entry.getKey());
+                dto.setSubject(classSubjects.get(0).getSubject());
+                dto.setClassSubjects(classSubjects);
+
+                result.add(dto);
+            }
+            return new Response<>(HttpStatus.OK.value(), "Success", result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
+        }
+    }
+
+    @Override
+    @Transactional
+    public Response<?> deleteBySubjectId(Long subjectId) {
+
+        try {
+            Optional<Subject> optionalSubject =
+                    subjectRepository.findById(subjectId);
+
+            if (optionalSubject.isEmpty()) {
+                return new Response<>(HttpStatus.BAD_REQUEST.value(), "Not found", null);
+            }
+            int deleted = classSubjectRepository.deleteBySubjectId(subjectId);
+            return new Response<>(HttpStatus.OK.value(), deleted > 0 ? "Deleted successfully" : "Nothing to delete", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);
+        }
+    }
+
+    @Override
+    public Response<?> getBySubjectId(Long subjectId) {
+        try {
+            if (!isAdmin())
+                return new Response<>(HttpStatus.FORBIDDEN.value(), "No permission", null);
+
+            List<ClassSubject> classSubjectList = classSubjectRepository.findBySubject_Id(subjectId);
+            return new Response<>(HttpStatus.OK.value(), "Success", classSubjectList);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response<>(HttpStatus.BAD_REQUEST.value(), "Something went wrong", null);

@@ -3,6 +3,7 @@ package com.tsms.dto;
 import java.util.Date;
 
 import com.tsms.entity.Address;
+import com.tsms.entity.StudentClass;
 import com.tsms.enums.Role;
 
 public class UserDto {
@@ -26,7 +27,9 @@ public class UserDto {
 
 	private String motherName;
 
-	private String section;
+	private StudentClass section;
+
+	private Long sectionId ;
 
 	private Date studiedFrom;
 	
@@ -100,11 +103,11 @@ public class UserDto {
 		this.motherName = motherName;
 	}
 
-	public String getSection() {
+	public StudentClass getSection() {
 		return section;
 	}
 
-	public void setSection(String section) {
+	public void setSection(StudentClass section) {
 		this.section = section;
 	}
 
@@ -158,13 +161,21 @@ public class UserDto {
 		this.phoneNo = phoneNo;
 	}
 
+	public Long getSectionId() {
+		return sectionId;
+	}
+
+	public void setSectionId(Long sectionId) {
+		this.sectionId = sectionId;
+	}
+
 	public UserDto() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public UserDto(Long id, String image, String name, String email, Role role, String gender, Date dob,
-			String fatherName, String motherName, String section, Date studiedFrom, Address presentAddress,
+			String fatherName, String motherName, StudentClass section, Date studiedFrom, Address presentAddress,
 			Address permanentAddress) {
 		super();
 		this.id = id;

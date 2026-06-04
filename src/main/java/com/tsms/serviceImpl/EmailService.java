@@ -284,7 +284,7 @@ public class EmailService {
 
 						</body>
 						</html>
-						""", exam.getStudentClass() != null ? exam.getStudentClass() : "ALL", exam.getFullMark());
+						""",exam.getClassSubject().getStudentClass() != null ? exam.getClassSubject().getStudentClass().getStudentClass() : "ALL", exam.getFullMark());
 
 				helper.setTo(toMails);
 				helper.setSubject(subject);

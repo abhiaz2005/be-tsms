@@ -56,10 +56,9 @@ public class StudentClass {
 		this.id = id;
 		this.studentClass = studentClass;
 		this.isActive = isActive;
-	} 
-	
-	
-	
-	
+	}
 
+	public StudentClass(Long id) {
+		this.id = id;
+	}
 }
