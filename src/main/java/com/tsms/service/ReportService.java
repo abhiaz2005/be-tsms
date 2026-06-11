@@ -7,8 +7,10 @@ import java.util.List;
 
 public interface ReportService {
     Response<?> addMarks(List<MarkDto> dtos);
-    Response<?> getAllMarks();
+    Response<?> getAllMarks(String year, String className);
     Response<?> getMarksByStudent(Long studentId);
     Response<?> editMark(MarkDto dto);
     Response<?> deleteMark(Long id);
+
+    Response<?> generateReport(Long studentId);
 }

@@ -136,7 +136,7 @@ public class FeesServiceImpl implements FeesService {
 	public Response<?> getAllFeesByStudent(Long id) {
 		try {
 			List<Fees> feesList = feesRepository.findAllByUserId(id);
-			return new Response<>(HttpStatus.BAD_REQUEST.value(), feesList.isEmpty() ? "No data present" : "OK",
+			return new Response<>(HttpStatus.OK.value(), feesList.isEmpty() ? "No data present" : "OK",
 					!feesList.isEmpty() ? feesList.stream().map(Fees::convertToDto).collect(Collectors.toList())
 							: Collections.emptyList());
 		} catch (Exception e) {

@@ -25,8 +25,8 @@ public class ReportController {
     }
 
     @GetMapping("/marks/all")
-    public ResponseEntity<?> getAllMarks() {
-        Response<?> res = reportService.getAllMarks();
+    public ResponseEntity<?> getAllMarks(@RequestParam(required = false) String year, @RequestParam(required = false) String className) {
+        Response<?> res = reportService.getAllMarks(year,className);
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
     }
 
@@ -45,6 +45,12 @@ public class ReportController {
     @DeleteMapping("/marks/delete/{id}")
     public ResponseEntity<?> deleteMark(@PathVariable Long id) {
         Response<?> res = reportService.deleteMark(id);
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
+    }
+
+    @GetMapping("generate/report")
+    public ResponseEntity<?> generateReport(@RequestParam(required = false) Long studentId) {
+        Response<?> res = reportService.generateReport(studentId);
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getResponseCode()));
     }
 }

@@ -1,5 +1,6 @@
 package com.tsms.controller;
 
+import com.tsms.dto.ExamMasterDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,42 +20,51 @@ import com.tsms.service.ExamService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("api/exam")
+@RequestMapping("/api/exam")
 public class ExamController {
 
-    private final Response response;
-
 	@Autowired
-	private ExamService examService ;
+	private ExamService examService;
 
-    ExamController(Response response) {
-        this.response = response;
-    }
-	
-	@PostMapping("add")
-	public ResponseEntity<?> createExam(@Valid @RequestBody ExamDto exam) {
-		Response<?> response  = examService.createExam(exam);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+	@PostMapping("/add")
+	public ResponseEntity<?> createExam(
+			@Valid @RequestBody ExamMasterDto dto) {
+
+		Response<?> response = examService.createExam(dto);
+
+		return new ResponseEntity<>(
+				response,
+				HttpStatus.valueOf(response.getResponseCode()));
 	}
-	
-	@GetMapping("all")
+
+	@GetMapping("/all")
 	public ResponseEntity<?> getAllExam() {
-		Response<?> response  = examService.getAllExam();
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+
+		Response<?> response = examService.getAllExam();
+
+		return new ResponseEntity<>(
+				response,
+				HttpStatus.valueOf(response.getResponseCode()));
 	}
-	
-	@PutMapping("edit")
-	public ResponseEntity<?> editExam(@Valid @RequestBody ExamDto exam) {
-		Response<?> response  = examService.editExam(exam);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+
+	@PutMapping("/edit")
+	public ResponseEntity<?> editExam(@Valid @RequestBody ExamMasterDto dto) {
+
+		Response<?> response = examService.editExam(dto);
+
+		return new ResponseEntity<>(
+				response,
+				HttpStatus.valueOf(response.getResponseCode()));
 	}
-	
-	@DeleteMapping("delete/{id}")
-	public ResponseEntity<?> deleteExam( @PathVariable Long id) {
-		Response<?> response  = examService.deleteExam(id);
-		return new ResponseEntity<>(response,HttpStatus.valueOf(response.getResponseCode()));
+
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deleteExam(
+			@PathVariable Long id) {
+
+		Response<?> response = examService.deleteExam(id);
+
+		return new ResponseEntity<>(
+				response,
+				HttpStatus.valueOf(response.getResponseCode()));
 	}
-	
-	
-	
 }

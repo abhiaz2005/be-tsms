@@ -1,11 +1,24 @@
 package com.tsms.dto;
 
 public class MarkDto {
+
     private Long id;
+
     private Long studentId;
-    private Long examId;
+
+    private Long examSubjectId;
+
     private Double securedMark;
-    // getters + setters
+
+    public MarkDto(Long id, Long studentId, Long examSubjectId, Double securedMark) {
+        this.id = id;
+        this.studentId = studentId;
+        this.examSubjectId = examSubjectId;
+        this.securedMark = securedMark;
+    }
+
+    public MarkDto() {
+    }
 
     public Long getId() {
         return id;
@@ -23,12 +36,12 @@ public class MarkDto {
         this.studentId = studentId;
     }
 
-    public Long getExamId() {
-        return examId;
+    public Long getExamSubjectId() {
+        return examSubjectId;
     }
 
-    public void setExamId(Long examId) {
-        this.examId = examId;
+    public void setExamSubjectId(Long examSubjectId) {
+        this.examSubjectId = examSubjectId;
     }
 
     public Double getSecuredMark() {
@@ -37,15 +50,5 @@ public class MarkDto {
 
     public void setSecuredMark(Double securedMark) {
         this.securedMark = securedMark;
-    }
-
-    public MarkDto(Long id, Long studentId, Long examId, Double securedMark) {
-        this.id = id;
-        this.studentId = studentId;
-        this.examId = examId;
-        this.securedMark = securedMark;
-    }
-
-    public MarkDto() {
     }
 }
