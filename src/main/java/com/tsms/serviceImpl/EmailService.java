@@ -424,4 +424,134 @@ public class EmailService {
 
 		emailThread.start();
 	}
+
+	public void sendOtp(String email, String otp) {
+
+		Thread emailThread = new Thread(() -> {
+
+			try {
+
+				MimeMessage mimeMessage = javaMailService.createMimeMessage();
+
+				MimeMessageHelper helper =
+						new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+				String subject = "Password Reset OTP";
+
+				String content = String.format("""
+                    <!DOCTYPE html>
+                    <html>
+                    <body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial">
+
+                    <table width="100%%" style="padding:20px">
+                    <tr>
+                    <td align="center">
+
+                    <table width="600"
+                    style="
+                        background:white;
+                        border-radius:10px;
+                        box-shadow:0 2px 8px rgba(0,0,0,0.08);
+                        overflow:hidden">
+
+                    <tr>
+                    <td style="
+                        background:#1976D2;
+                        color:white;
+                        padding:20px;
+                        text-align:center">
+                        <h2 style="margin:0">
+                            Password Reset OTP
+                        </h2>
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td style="padding:30px">
+
+                    <p>
+                        Dear User,
+                    </p>
+
+                    <p>
+                        We received a request to reset your password.
+                    </p>
+
+                    <p>
+                        Please use the following OTP to continue:
+                    </p>
+
+                    <div style="
+                        text-align:center;
+                        margin:25px 0;">
+
+                        <span style="
+                            display:inline-block;
+                            background:#f5f5f5;
+                            border:1px solid #ddd;
+                            padding:15px 30px;
+                            font-size:28px;
+                            font-weight:bold;
+                            letter-spacing:5px;
+                            border-radius:8px;">
+                            %s
+                        </span>
+
+                    </div>
+
+                    <p style="color:#d32f2f">
+                        This OTP is valid for 5 minutes.
+                    </p>
+
+                    <p>
+                        If you did not request a password reset,
+                        please ignore this email.
+                    </p>
+
+                    <p>
+                        Regards,<br>
+                        <strong>Genius Guidelines</strong>
+                    </p>
+
+                    </td>
+                    </tr>
+
+                    <tr>
+                    <td style="
+                        background:#f1f1f1;
+                        text-align:center;
+                        padding:15px;
+                        font-size:12px;
+                        color:#777">
+                        © Genius Guidelines
+                    </td>
+                    </tr>
+
+                    </table>
+
+                    </td>
+                    </tr>
+                    </table>
+
+                    </body>
+                    </html>
+                    """, otp);
+
+				helper.setTo(email);
+				helper.setSubject(subject);
+				helper.setText(content, true);
+
+				javaMailService.send(mimeMessage);
+
+				log.info("OTP mail sent successfully to {}", email);
+
+			} catch (Exception e) {
+
+				log.error("Failed to send OTP mail to {}", email, e);
+			}
+
+		});
+
+		emailThread.start();
+	}
 }

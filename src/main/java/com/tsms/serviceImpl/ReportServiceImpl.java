@@ -137,13 +137,11 @@ public class ReportServiceImpl implements ReportService {
                 toSave.add(mark);
             }
 
-            // ── Save jo valid hain ───────────────────────────────
             if (!toSave.isEmpty()) {
                 marksRepository.saveAll(toSave);
                 logger.info("{} marks saved successfully", toSave.size());
             }
 
-            // ── Response with full summary ───────────────────────
             Map<String, Object> result = new LinkedHashMap<>();
             result.put("saved", toSave.size());
             result.put("skipped", skipped.size());

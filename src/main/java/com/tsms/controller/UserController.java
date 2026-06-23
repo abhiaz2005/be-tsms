@@ -29,50 +29,69 @@ public class UserController {
 	@PostMapping("auth/register")
 	public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request) {
 		Response<?> response  = userService.register(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PostMapping("auth/register-s-admin")
 	public ResponseEntity<?> registerAdmin( @RequestBody RegisterRequest request) {
 		Response<?> response  = userService.registerAdmin(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PostMapping("auth/login")
 	public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
 		Response<?> response  = userService.login(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PostMapping("verify/otp")
 	public ResponseEntity<?> verifyOtp(@Valid @RequestBody OtpRequest request) {
 		Response<?> response  = userService.verifyOtp(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PostMapping("send/otp")
 	public ResponseEntity<?> sendOtp(@RequestBody OtpRequest request) {
 		Response<?> response  = userService.sendOtp(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@GetMapping("api/get/all/student")
 	public ResponseEntity<?> getAllStudent() {
 		Response<?> response  = userService.getAllStudent();
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@GetMapping("api/get/student")
 	public ResponseEntity<?> getStudentById(@RequestParam(required = false)Long id) {
 		Response<?> response  = userService.getStudentById(id);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
 	
 	@PutMapping("api/update/user")
 	public ResponseEntity<?> updateStudent(@RequestBody UserDto request) {
 		Response<?> response  = userService.updateStudent(request);
-		return new ResponseEntity<>(response,HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
 	}
+
+	@PostMapping("api/update/img")
+	public ResponseEntity<?> updateImage(@RequestBody UserDto request) {
+		Response<?> response  = userService.updateImage(request);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+	}
+
+	@PutMapping("api/change/password")
+	public ResponseEntity<?> updatePassword(@RequestBody LoginRequest request) {
+		Response<?> response  = userService.updatePassword(request);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+	}
+
+	@PostMapping("generate/otp")
+	public ResponseEntity<?> generateOtp(@RequestBody LoginRequest request) {
+		Response<?> response  = userService.generateOtp(request);
+		return new ResponseEntity<>(response, HttpStatus.valueOf(response.getResponseCode()));
+	}
+
 
 	
 }

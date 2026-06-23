@@ -26,4 +26,9 @@ public interface UserService {
 
 	Response<?> updateStudent(UserDto request);
 
+    Response<?> updateImage(UserDto request);
+
+	Response<?> updatePassword(LoginRequest request);
+
+	Response<?> generateOtp(LoginRequest request);
 }

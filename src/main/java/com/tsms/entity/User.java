@@ -73,6 +73,12 @@ public class User {
     @Column(name = "is_active")
     private Boolean isActive ;
 
+	@Column(name = "otp")
+	private String otp ;
+
+	@Column(name = "otp_expiry")
+	private Date otpExpiry ;
+
 	public Long getId() {
 		return id;
 	}
@@ -208,6 +214,22 @@ public class User {
 
 	public void setPhoneNo(String phoneNo) {
 		this.phoneNo = phoneNo;
+	}
+
+	public String getOtp() {
+		return otp;
+	}
+
+	public void setOtp(String otp) {
+		this.otp = otp;
+	}
+
+	public Date getOtpExpiry() {
+		return otpExpiry;
+	}
+
+	public void setOtpExpiry(Date otpExpiry) {
+		this.otpExpiry = otpExpiry;
 	}
 
 	public User() {
